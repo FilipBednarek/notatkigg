@@ -1,0 +1,180 @@
+-------------------------12.09--------------------------
+create database rezerwacje DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_polish_ci;
+    
+create table adres (
+    id int not null AUTO_INCREMENT PRIMARY KEY,
+    powiat varchar(45) not null,
+    miejscowosc varchar(45) not null,
+    ulica varchar(45) not null,
+    numer_domu varchar(45) not null,
+    numer_lokalu varchar(45) not null
+);
+
+create table pasazer (
+    id int not null AUTO_INCREMENT PRIMARY KEY,
+    imie varchar(45) not null,
+    nazwisko varchar(45) not null,
+    pesel varchar(45) not null,
+    telefon varchar(45) not null,
+    mail varchar(45) not null,
+    adres_id INT,
+    FOREIGN KEY (adres_id) REFERENCES adres(id)
+);
+
+create table rezerwacje (
+    id int not null AUTO_INCREMENT PRIMARY KEY,
+    numer_siedzenia varchar(45) not null,
+    bagaz varchar(45) not null,
+    pasazer_id varchar(45) not null,
+    lot_numer varchar(45) not null,
+    numer_lokalu varchar(45) not null
+);
+
+
+insert into przedmiot values('','matematyka')
+insert into przedmiot(nazwa) values('matematyka')
+
+insert into uczen values("","Jan","Kowalski",3)
+
+insert into uczen(imie,nazwisko,id_klasy) values("Jan","Kowalski",3)
+
+
+-------------------------19.09--------------------------
+
+create user 'username'@'localhost' identified by 'password'; -> tworzenie uzyt
+
+grant all privileges on *.* to 'username'@'localhost'; -> nadawanie uprawnien uzytkownikowi
+	1 gwiazda do wsystkich baz danych
+	2 gwaizdka do wsyztskich tabel
+
+flush privileges; -> potiwerdzenie nadania wewnetrznych uprawnien
+
+	all privileges ->
+	create ->
+	drop -> zezwala na usuwanie
+	delete -> kombinowanie rekordami
+	insert -> wprow danych
+	select ->
+	grant option -> nadawanie wysokich uprawnien, taki admin
+
+-----
+
+grant permission on database.table to 'username'@'localhost';
+
+
+revoke -> usuwanie uprawnien uzytk.
+
+revoke permission on database.table to 'username'@'localhost';
+
+-----
+
+drop user 'username'@'localhost' -> usuwanie uzytk.
+
+% w konta uzytk. wtedy mozna logowac sie z kazdego kompa pod kazda domena
+
+cerate user user@' %.nazwa_domeny' identified by 'haslo';
+
+create user uzytkownik@' %' identified by 'haslo'; -> z kazdego kompa
+
+create user 'user'@'213.18688.112' identified by 'haslo';
+
+-----
+
+sys admin - uzyt prtzypis maja prawa do kazdej bazy
+serwer admin -> role adm. serwera, nie bazami danych
+setup admin -> dostep do konf. systemu
+security admin -> adm. bezpieczenstwa
+processadmin -> kont procesy
+basecreator -> tworza wszytsko co zwiazane z bazami danych
+diskadmin -> 
+
+-----
+create role bbb; -> twoerzenie wlasnej roli;
+create role 'admin', 'sysq';
+create role 'dddd'@'localhost';
+
+
+grant select, insert, update, delete on dbo.ksiazki to blok1;
+grant select, insert, update, delete on dbo.ksiazki to blok1; -> odbieranie tak samo tylko z revoke
+
+deny -> jawne odbieranie uprawnien
+
+-----
+
+host, database, user, tables_priv, columns_priv, procs_priv
+
+grant update on database.table * to user;
+grant update on ksiegarnia.cena * to spejson;
+
+
+
+show grants for user; -> pokazuje to (grant usage on *.* to `user`@`%`)
+
+
+-------------------------26.09--------------------------
+
+
+select nazwa, cena_jednostkowa, ilosc_w_jednostce from produkty
+where cena_jednostkowa between 100 and 130;
+
+
+IN(warunek,warunek2)
+select nazwa, cena, ilosc from produkt where kategoria_id in(2,3) and ilosc > 70;
+
+DISTINCT 
+select distinct kraj from producent;
+
+EXISTS
+select nazwa_kolumn from nazwa_tabeli 
+WHERE EXISTS (select nazwa_kolumn from nazwa_tabeli where warunki);
+
+select nazwa from producent 
+WHERE EXISTS (select nazwa from produkt where produkt.producent_id = producent.id and cena < 10);
+
+
+WHERE NOT
+select nazwa from producent 
+WHERE NOT producent.kraj = "Niemcy";
+
+select nazwa, kraj from producent 
+WHERE NOT producent.kraj like "%Nie%";
+
+where warunek and warunek2 and warunek3
+select nazwa from produkt 
+WHERE cena < 30 and ilosc > 50;
+
+select nazwisko from klient 
+WHERE klient.nazwisko like "%ek" or klient.nazwisko like "%ak";
+
+
+
+
+-------------------------24.10--------------------------
+
+kaskadowe suswanie i aktual. -> przy dodawaniu ustala sie kto z kim, czyli utworzenie relacji. restrict, cascade
+dml trzema ustalic (SIUD -> select, insert, update, delete)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+31.10
+(plec czyli jakas tam nazwa)
+plec enum ('M','K');
+plec char(3) check (plec IN ('M','K'));
+
+alter table ....... first -> wskakuje na 1 miejsce w tabeli
+alter table ....... after nazwa po czym ma byc wstawione ->
