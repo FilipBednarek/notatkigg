@@ -1,0 +1,35 @@
+upper(left(klienci.imie,1))
+SELECT concat(klienci.imie, ' ', klienci.nazwisko) as imie_i_nazwisko from klienci;
+
+SELECT CONCAT(UPPER(SUBSTRING(imie, 1, 1)), LOWER(SUBSTRING(imie, 2)), ' ', UPPER(SUBSTRING(nazwisko, 1, 1)), LOWER(SUBSTRING(nazwisko, 2))) AS imie_nazwisko
+FROM klienci;
+
+select klienci.ImieKlienta, klienci.NazwiskoKlienta, 'klient' as 'kto' from klienci
+UNION
+SELECT pracownicy.ImiePracownika, pracownicy.NazwiskoPracownika, 'pracownik'  from pracownicy;
+
+
+2. Wyświetl numery zamówień, w ramach których zakupiono zarówno licznik jak i opone.
+select zamowienia.NumerZamowienia FROM zamowienia
+JOIN dane_zamowien on dane_zamowien.NumerZamowienia = zamowienia.NumerZamowienia
+JOIN produkty on produkty.NumerProduktu = dane_zamowien.NumerProduktu
+where produkty.NazwaProduktu like '%licznik%'
+intersect
+select zamowienia.NumerZamowienia FROM zamowienia
+JOIN dane_zamowien on dane_zamowien.NumerZamowienia = zamowienia.NumerZamowienia
+JOIN produkty on produkty.NumerProduktu = dane_zamowien.NumerProduktu
+where produkty.NazwaProduktu like '%opony%';
+
+
+3. Wyświetl numery zamówień, imiona i nazwiska klientów, którzy kupili licznik, ale nie kupili opony.
+select zamowienia.NumerZamowienia, klienci.ImieKlienta, klienci.NazwiskoKlienta FROM zamowienia
+JOIN klienci on klienci.IDKlienta = zamowienia.IDKlienta
+JOIN dane_zamowien on dane_zamowien.NumerZamowienia = zamowienia.NumerZamowienia
+JOIN produkty on produkty.NumerProduktu = dane_zamowien.NumerProduktu
+where produkty.NazwaProduktu like '%licznik%'
+except
+select zamowienia.NumerZamowienia, klienci.ImieKlienta, klienci.NazwiskoKlienta FROM zamowienia
+JOIN dane_zamowien on dane_zamowien.NumerZamowienia = zamowienia.NumerZamowienia
+JOIN klienci on klienci.IDKlienta = zamowienia.IDKlienta
+JOIN produkty on produkty.NumerProduktu = dane_zamowien.NumerProduktu
+where produkty.NazwaProduktu like '%opony%';
